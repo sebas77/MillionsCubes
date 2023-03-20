@@ -1,0 +1,17 @@
+bin/
+Library/
+Temp/
+.idea/
+JetBrains
+JetBrains.*
+obj/
+Recordings/
+Logs/
+UserSettings/
+Build/
+*.user
+Example4-NET-SDL/**/*.meta
+Example5-NET-Vanilla/**/*.meta
+Example7-Stride-Turrets/**/*.meta
+Example8-ComputeSharp/**/*.meta
+packages-lock.json

@@ -17,9 +17,9 @@ public class CubeGeometryShaderController: MonoBehaviour
         var numberOfObjectsPerSide = sqrtCubeCount;
 
         _totalObjects = numberOfObjectsPerSide * numberOfObjectsPerSide;
-
-        _centerBuffer = new ComputeBuffer(_totalObjects, sizeof(float) * 3, ComputeBufferType.Structured, ComputeBufferMode.SubUpdates);
-        var array = _centerBuffer.BeginWrite<float3>(0, _totalObjects);
+        
+        _centerBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, GraphicsBuffer.UsageFlags.LockBufferForWrite, _totalObjects, sizeof(float) * 3);
+        var array = _centerBuffer.LockBufferForWrite<float3>(0, _totalObjects);
 
         for (var i = 0; i < numberOfObjectsPerSide; ++i)
         for (var j = 0; j < numberOfObjectsPerSide; ++j)
@@ -63,8 +63,8 @@ public class CubeGeometryShaderController: MonoBehaviour
         _jobhandle.Complete();
         //now that we are sure that the job is complete, we can do end write and start a new write.
         //not sure if this is actually necessary
-        _centerBuffer.EndWrite<float3>(_totalObjects);
-        _array = _centerBuffer.BeginWrite<float3>(0, _totalObjects);
+        _centerBuffer.UnlockBufferAfterWrite<float3>(_totalObjects);
+        _array = _centerBuffer.LockBufferForWrite<float3>(0, _totalObjects);
 
         _jobhandle = new UpdateDataJob(Time.unscaledTime, sqrtCubeCount)
         {
@@ -113,6 +113,6 @@ public class CubeGeometryShaderController: MonoBehaviour
     NativeArray<float3> _array;
     JobHandle _jobhandle;
     int _totalObjects;
-    ComputeBuffer _centerBuffer;
+    GraphicsBuffer _centerBuffer;
     Mesh _cubeMesh;
 }
