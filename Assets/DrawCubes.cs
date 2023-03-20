@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class CubeGeometryShaderController: MonoBehaviour
 {
-    public int sqrtCubeCount = 5000;
+    public int sqrtCubeCount = 10000;
     public float cubeSize = 1.0f;
     public Material material;
 
@@ -72,8 +72,12 @@ public class CubeGeometryShaderController: MonoBehaviour
         }.ScheduleBatch(_totalObjects, 32);
 
         // Draw the cubes
-        Graphics.DrawMeshInstancedProcedural(
-            _cubeMesh, 0, material, new Bounds(transform.position, Vector3.one * 1000000), sqrtCubeCount * sqrtCubeCount, null);
+        RenderParams param = default;
+        
+        param.material = material;
+        param.worldBounds = new Bounds(transform.position, Vector3.one * 1000000);
+
+        Graphics.RenderMeshPrimitives(param, _cubeMesh, 0, sqrtCubeCount * sqrtCubeCount);
     }
 
     void OnDestroy()
